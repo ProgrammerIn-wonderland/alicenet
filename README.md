@@ -1,8 +1,10 @@
 # Alicenet
 
-This is a small single header internal C++ HTTP/s client library I made for my own projects, it is a wrapper around libcurl
+This is a small single header internal C++ HTTP/s client library I made for my own projects, it is a wrapper around libcurl (so link it by adding -lcurl to your compiler)
 
 Q&A
+
+```
 is it well written?
 No
 
@@ -11,7 +13,7 @@ Maybe
 
 Why should I use it?
 Its simple to use
-
+```
 
 To get started with alicenet, simply copy the "alicenet.hpp" header to your program and include it like this
 `#include "alicenet.hpp"`
@@ -34,7 +36,7 @@ all your outputs will start with `response`, so if you want the body of your res
 
 if you want to know if your response was sucessful
 ```cpp
-if (response.responseCode = 200) {
+if (request.responseCode == 200) {
     // celebrate
 } else {
     // cry
@@ -44,10 +46,13 @@ if (response.responseCode = 200) {
 if you want to get all the headers, they'll be provided in a nice std::map object, so just 
 
 ```cpp
-	for(auto header: request.responseHeaders) {
-		cout << header.first << ": " << header.second << endl;
-	}
+for(auto header: request.responseHeaders) {
+	std::cout << header.first << ": " << header.second << endl;
+}
 ```
 
 and if you need to know how much time the request took, that'll be provided in a variable called "timeElapsed"
 
+`std::cout << request.timeElapsed`
+
+Example code is provided in `testApplication.cpp`
