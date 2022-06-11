@@ -31,8 +31,8 @@ if you wish you can additionally pass
 
 once you declare all your options, go and make that request `request.makeRequest()`
 
-all your outputs will start with `response`, so if you want the body of your response, and you want to print it,
-`std::cout << response.responseData` 
+all your outputs will be in the `response` struct, so if you want the body of your response, and you want to print it,
+`std::cout << response.response.Data` 
 
 if you want to know if your response was sucessful
 ```cpp
