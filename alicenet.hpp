@@ -1,36 +1,69 @@
+
 #include <cstddef>
 #include <cstring>
 #include <iostream>
 #include <iterator>
+#include <sstream>
 #include <string>
 #include <type_traits>
 #include <curl/curl.h>
 #include <stdexcept>
 #include <vector>
 #include <map>
+#pragma cling load("curl") // for cling
 
 
 #pragma comment(lib, "curl")
 
+class alicenetresponse {
+    public:
+        std::string data;
+        long code;
+        std::map<std::string, std::string> headers;
+        double timeElapsed;
+};
+
+struct alicenetoptions {
+    std::string userAgent;
+    std::map<std::string, std::string> headers;
+    std::string type;
+    std::string authentication;
+    std::string postOptions;
+};
+
 class alicenet {       // The class
 	public:             // Access specifier
+        alicenet(std::string url) {
+            this->url = url;
+            this->makeRequest();
+        }
+        alicenet(std::string url, alicenetoptions options) {
+            this->url = url;
+            headers = options.headers;
+            type = options.type;
+            postOptions = options.postOptions;
+            userAgent = options.userAgent;
+            authentication = options.authentication;
+            this->makeRequest();
+
+        }
+        alicenet();
 		std::string url;
         std::map<std::string, std::string> headers;
 		std::string type;
         std::string postOptions;
 		std::string userAgent;
 		std::string authentication;
-        std::string responseData;
-        long responseCode;
-        std::map<std::string, std::string> responseHeaders;
         double timeElapsed;
-	
-
+        alicenetresponse response;
+        
 		void makeRequest();
 
 };
 
-inline size_t writeFunction(void *ptr, size_t size, size_t nmemb, std::string* data) {
+
+
+inline size_t writeFunction(void *ptr, size_t size, size_t nmemb, std::string *data) {
     data->append((char*) ptr, size * nmemb);
     return size * nmemb;
 }
@@ -87,10 +120,10 @@ inline void alicenet::makeRequest() {
             }
         }
         
-        std::string response_string;
+        // std::string response_string;
         std::string header_string;
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunction);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_string);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response.data);
         curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header_string);
         
         CURLcode curlPref =  curl_easy_perform(curl);
@@ -111,9 +144,9 @@ inline void alicenet::makeRequest() {
 
         curl_easy_cleanup(curl);
         curl = NULL;
-		responseData = response_string;
-        responseCode = response_code;
-        responseHeaders = makeHeaderVectorIntoMap(makeHeaderStringIntoVector(header_string));
+		// responseData = response_string;
+        response.code = response_code;
+        response.headers = makeHeaderVectorIntoMap(makeHeaderStringIntoVector(header_string));
         timeElapsed = elapsed;
     }
 }
