@@ -29,7 +29,7 @@ int main() {
 	if (request.response.code == 200) {
 		cout << "Response was successful" << endl;
 	} else {
-    	cout << "Response was not successful" << endl << endl;
+    		cout << "Response was not successful" << endl << endl;
 	}
 
 	cout << "Reponse Data:" << endl;
